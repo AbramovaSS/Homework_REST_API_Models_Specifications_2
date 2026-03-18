@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static specs.UpdateSpec.UpdateSpec.*;
+import static specs.update.UpdateSpec.*;
 import static specs.login.LoginSpec.successLoginResponseSpec;
 import static specs.registration.RegistrationSpec.requestSpec;
 import static specs.registration.RegistrationSpec.successRegistrationResponseSpec;

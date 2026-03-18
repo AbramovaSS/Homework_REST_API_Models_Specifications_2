@@ -1,4 +1,4 @@
-package specs.UpdateSpec;
+package specs.update;
 
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.ResponseSpecification;
