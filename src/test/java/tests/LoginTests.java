@@ -90,10 +90,8 @@ public class LoginTests extends TestBase {
                 .spec(wrongCredentialLoginResponseSpec)
                 .extract().as(WrongCredentialsResponseModel.class);
 
-        String expectedDetailError = LOGIN_WRONG_CREDENTIALS_ERROR;
         String actualDetail = loginResponse.detail();
-
-        assertThat(actualDetail).isEqualTo(expectedDetailError);
+        assertThat(actualDetail).isEqualTo(LOGIN_WRONG_CREDENTIALS_ERROR);
     }
 
     @Test
@@ -123,9 +121,8 @@ public class LoginTests extends TestBase {
                 .extract()
                 .as(FieldRequiredResponseModel.class);
 
-        String expectedUsernameError = EMPTY_FIELD_ERROR;
         String actualUsername = emptyUsernameLoginResponse.username().get(0);
-        assertThat(actualUsername).isEqualTo(expectedUsernameError);
+        assertThat(actualUsername).isEqualTo(EMPTY_FIELD_ERROR);
 
     }
 
