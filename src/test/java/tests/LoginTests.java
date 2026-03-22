@@ -6,33 +6,23 @@ import models.login.SuccessfulLoginResponseModel;
 import models.login.WrongCredentialsResponseModel;
 import models.registration.RegistrationBodyModel;
 import models.registration.SuccessfulRegistrationResponseModel;
-import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static specs.BaseSpec.requestSpec;
 import static specs.login.LoginSpec.*;
 import static specs.registration.RegistrationSpec.*;
 import static tests.TestData.*;
 
 public class LoginTests extends TestBase {
-
-    String username;
-    String password;
-
-    @BeforeEach
-    public void prepareTestData() {
-        Faker faker = new Faker();
-        username = faker.name().firstName();
-        password = faker.name().firstName();
-    }
+    TestData testData = new TestData();
 
     @Test
     @DisplayName("Успешная авторизация")
     public void successfulLogin() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -43,9 +33,9 @@ public class LoginTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        assertThat(registrationResponse.username()).isEqualTo(username);
+        assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password);
 
         SuccessfulLoginResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -67,7 +57,7 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Вход в аккаунт с неверным паролем")
     public void wrongCredentialLogin() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -78,9 +68,9 @@ public class LoginTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        assertThat(registrationResponse.username()).isEqualTo(username);
+        assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password + "1");
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password + "1");
 
         WrongCredentialsResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -97,7 +87,7 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Вход в аккаунт с незаполненным полем \"Username\"")
     public void emptyUsernameFieldLogin() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -108,9 +98,9 @@ public class LoginTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        assertThat(registrationResponse.username()).isEqualTo(username);
+        assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
-        LoginBodyModel loginData = new LoginBodyModel("", password);
+        LoginBodyModel loginData = new LoginBodyModel("", testData.password);
 
         FieldRequiredResponseModel emptyUsernameLoginResponse = given(requestSpec)
                 .body(loginData)

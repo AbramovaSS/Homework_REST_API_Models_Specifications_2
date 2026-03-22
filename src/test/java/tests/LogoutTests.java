@@ -8,35 +8,24 @@ import models.logout.LogoutBodyModel;
 import models.logout.UnauthorizedResponseModel;
 import models.registration.RegistrationBodyModel;
 import models.registration.SuccessfulRegistrationResponseModel;
-import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static specs.BaseSpec.requestSpec;
 import static specs.login.LoginSpec.successLoginResponseSpec;
 import static specs.logout.LogoutSpec.*;
-import static specs.registration.RegistrationSpec.requestSpec;
 import static specs.registration.RegistrationSpec.successRegistrationResponseSpec;
 import static tests.TestData.*;
 
 public class LogoutTests extends TestBase {
-
-    String username;
-    String password;
-
-    @BeforeEach
-    public void prepareTestData() {
-        Faker faker = new Faker();
-        username = faker.name().firstName();
-        password = faker.name().firstName();
-    }
+    TestData testData = new TestData();
 
     @Test
     @DisplayName("Успешный выход из учетной записи")
     public void successfulLogout() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -47,9 +36,9 @@ public class LogoutTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        assertThat(registrationResponse.username()).isEqualTo(username);
+        assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password);
 
         SuccessfulLoginResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -74,16 +63,12 @@ public class LogoutTests extends TestBase {
                 .response();
 
         assertThat(logoutResponse.body().asString()).isEqualTo("{}");
-
     }
 
     @Test
     @DisplayName("Refresh = null")
     public void transmittingZeroRefresh() {
-
-        String refresh = null;
-
-        LogoutBodyModel logoutData = new LogoutBodyModel(refresh);
+        LogoutBodyModel logoutData = new LogoutBodyModel(REFRESH_NULL);
 
         FieldNullResponseModel refreshNullResponse = given(requestSpec)
                 .body(logoutData)
@@ -102,10 +87,7 @@ public class LogoutTests extends TestBase {
     @Test
     @DisplayName("Невалидный refresh")
     public void passingInvalidRefresh() {
-
-        String refresh = "string";
-
-        LogoutBodyModel logoutData = new LogoutBodyModel(refresh);
+        LogoutBodyModel logoutData = new LogoutBodyModel(REFRESH_INVALID);
 
         UnauthorizedResponseModel logoutUnauthorizedResponse = given(requestSpec)
                 .body(logoutData)

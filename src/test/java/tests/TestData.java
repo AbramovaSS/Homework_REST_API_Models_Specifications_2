@@ -1,6 +1,22 @@
 package tests;
 
+import net.datafaker.Faker;
+
+import java.util.Locale;
+
 public class TestData {
+    Faker faker = new Faker(new Locale("en"));
+    public String username = faker.name().firstName(),
+            password = faker.credentials().password(),
+            longUsername = faker.lorem().characters(151),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            email = faker.internet().emailAddress();
+
+    public static final String REFRESH_NULL = null;
+
+    public static final String REFRESH_INVALID = "string";
+
     public static final String LOGIN_WRONG_CREDENTIALS_ERROR = "Invalid username or password.";
 
     public static final String REGISTRATION_EXISTING_USER_ERROR =

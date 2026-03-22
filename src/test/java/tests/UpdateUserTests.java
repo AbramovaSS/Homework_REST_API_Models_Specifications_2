@@ -6,41 +6,24 @@ import models.login.SuccessfulLoginResponseModel;
 import models.registration.RegistrationBodyModel;
 import models.registration.SuccessfulRegistrationResponseModel;
 import models.update.*;
-import net.datafaker.Faker;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static specs.BaseSpec.requestSpec;
 import static specs.update.UpdateSpec.*;
 import static specs.login.LoginSpec.successLoginResponseSpec;
-import static specs.registration.RegistrationSpec.requestSpec;
 import static specs.registration.RegistrationSpec.successRegistrationResponseSpec;
 import static tests.TestData.*;
 
 public class UpdateUserTests extends TestBase {
-
-    String username;
-    String password;
-    String firstName;
-    String lastName;
-    String email;
-
-    @BeforeEach
-    public void prepareTestData() {
-        Faker faker = new Faker();
-        username = faker.name().firstName();
-        password = faker.name().firstName();
-        firstName = faker.name().firstName();
-        lastName = faker.name().lastName();
-        email = faker.internet().emailAddress();
-    }
+    TestData testData = new TestData();
 
     @Test
     @DisplayName("Успешное обновление данных пользователя")
     public void successfulRegistration() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -51,11 +34,11 @@ public class UpdateUserTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        Assertions.assertThat(registrationResponse.username()).isEqualTo(username);
+        Assertions.assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
         String registrationIp = registrationResponse.remoteAddr();
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password);
 
         SuccessfulLoginResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -74,7 +57,7 @@ public class UpdateUserTests extends TestBase {
         Assertions.assertThat(actualRefresh).startsWith(expectedTokenPath);
         Assertions.assertThat(actualAccess).isNotEqualTo(actualRefresh);
 
-        UpdateBodyModel updateData = new UpdateBodyModel(username, firstName, lastName, email);
+        UpdateBodyModel updateData = new UpdateBodyModel(testData.username, testData.firstName, testData.lastName, testData.email);
 
         SuccessfulUpdateResponseModel updateResponse = given(requestSpec)
                 .header("Authorization", "Bearer " + actualAccess)
@@ -87,10 +70,10 @@ public class UpdateUserTests extends TestBase {
                 .as(SuccessfulUpdateResponseModel.class);
 
         Assertions.assertThat(updateResponse.id()).isEqualTo(registrationResponse.id());
-        Assertions.assertThat(updateResponse.username()).isEqualTo(username);
-        Assertions.assertThat(updateResponse.firstName()).isEqualTo(firstName);
-        Assertions.assertThat(updateResponse.lastName()).isEqualTo(lastName);
-        Assertions.assertThat(updateResponse.email()).isEqualTo(email);
+        Assertions.assertThat(updateResponse.username()).isEqualTo(testData.username);
+        Assertions.assertThat(updateResponse.firstName()).isEqualTo(testData.firstName);
+        Assertions.assertThat(updateResponse.lastName()).isEqualTo(testData.lastName);
+        Assertions.assertThat(updateResponse.email()).isEqualTo(testData.email);
 
         Assertions.assertThat(registrationResponse.remoteAddr()).matches(REGISTRATION_IP_REGEXP);
 
@@ -101,7 +84,7 @@ public class UpdateUserTests extends TestBase {
     @Test
     @DisplayName("Успешное добавление \"email\"")
     public void successfulEmailUpdate() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -112,11 +95,11 @@ public class UpdateUserTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        Assertions.assertThat(registrationResponse.username()).isEqualTo(username);
+        Assertions.assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
         String registrationIp = registrationResponse.remoteAddr();
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password);
 
         SuccessfulLoginResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -135,7 +118,7 @@ public class UpdateUserTests extends TestBase {
         Assertions.assertThat(actualRefresh).startsWith(expectedTokenPath);
         Assertions.assertThat(actualAccess).isNotEqualTo(actualRefresh);
 
-        UpdateEmailBodyModel updateEmailData = new UpdateEmailBodyModel(email);
+        UpdateEmailBodyModel updateEmailData = new UpdateEmailBodyModel(testData.email);
 
         SuccessfulUpdateResponseModel updateResponse = given(requestSpec)
                 .header("Authorization", "Bearer " + actualAccess)
@@ -148,22 +131,21 @@ public class UpdateUserTests extends TestBase {
                 .as(SuccessfulUpdateResponseModel.class);
 
         Assertions.assertThat(updateResponse.id()).isEqualTo(registrationResponse.id());
-        Assertions.assertThat(updateResponse.username()).isEqualTo(username);
+        Assertions.assertThat(updateResponse.username()).isEqualTo(testData.username);
         Assertions.assertThat(updateResponse.firstName()).isEqualTo("");
         Assertions.assertThat(updateResponse.lastName()).isEqualTo("");
-        Assertions.assertThat(updateResponse.email()).isEqualTo(email);
+        Assertions.assertThat(updateResponse.email()).isEqualTo(testData.email);
 
         Assertions.assertThat(registrationResponse.remoteAddr()).matches(REGISTRATION_IP_REGEXP);
 
         String updateIp = updateResponse.remoteAddr();
         Assertions.assertThat(registrationIp).isEqualTo(updateIp);
-
     }
 
     @Test
     @DisplayName("Поле \"username\" обязательно для заполнения")
     public void UsernameFieldRequiredUpdate() {
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.username, testData.password);
 
         SuccessfulRegistrationResponseModel registrationResponse = given(requestSpec)
                 .body(registrationData)
@@ -174,9 +156,9 @@ public class UpdateUserTests extends TestBase {
                 .extract()
                 .as(SuccessfulRegistrationResponseModel.class);
 
-        Assertions.assertThat(registrationResponse.username()).isEqualTo(username);
+        Assertions.assertThat(registrationResponse.username()).isEqualTo(testData.username);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(testData.username, testData.password);
 
         SuccessfulLoginResponseModel loginResponse = given(requestSpec)
                 .body(loginData)
@@ -194,7 +176,8 @@ public class UpdateUserTests extends TestBase {
         Assertions.assertThat(actualRefresh).startsWith(expectedTokenPath);
         Assertions.assertThat(actualAccess).isNotEqualTo(actualRefresh);
 
-        UpdateWithoutUsernameBodyModel updateWithoutUsernameData = new UpdateWithoutUsernameBodyModel(firstName, lastName, email);
+        UpdateWithoutUsernameBodyModel updateWithoutUsernameData = new UpdateWithoutUsernameBodyModel(testData.firstName,
+                                                                                              testData.lastName, testData.email);
 
         FieldRequiredResponseModel updateWithoutUsernameResponse = given(requestSpec)
                 .header("Authorization", "Bearer " + actualAccess)
