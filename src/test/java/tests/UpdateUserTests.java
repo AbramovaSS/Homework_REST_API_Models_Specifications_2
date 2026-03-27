@@ -177,7 +177,7 @@ public class UpdateUserTests extends TestBase {
         Assertions.assertThat(actualAccess).isNotEqualTo(actualRefresh);
 
         UpdateWithoutUsernameBodyModel updateWithoutUsernameData = new UpdateWithoutUsernameBodyModel(testData.firstName,
-                                                                                              testData.lastName, testData.email);
+                testData.lastName, testData.email);
 
         FieldRequiredResponseModel updateWithoutUsernameResponse = given(requestSpec)
                 .header("Authorization", "Bearer " + actualAccess)

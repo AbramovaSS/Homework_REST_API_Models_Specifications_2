@@ -71,7 +71,7 @@ public class RegistrationTests extends TestBase {
     public void emptyUsernameFieldRegistration() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", testData.password);
 
-        FieldRequiredResponseModel emptyUserResponseModel  = given(requestSpec)
+        FieldRequiredResponseModel emptyUserResponseModel = given(requestSpec)
                 .body(registrationData)
                 .when()
                 .post("/users/register/")
@@ -89,7 +89,7 @@ public class RegistrationTests extends TestBase {
     public void inputMoreThan150CharactersRegistration() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(testData.longUsername, testData.password);
 
-        FieldRequiredResponseModel longUserResponseModel  = given(requestSpec)
+        FieldRequiredResponseModel longUserResponseModel = given(requestSpec)
                 .body(registrationData)
                 .when()
                 .post("/users/register/")

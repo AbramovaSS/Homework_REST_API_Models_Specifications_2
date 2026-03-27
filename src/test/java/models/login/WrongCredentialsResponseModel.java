@@ -1,4 +1,3 @@
 package models.login;
 
-public record WrongCredentialsResponseModel(String detail) {
-}
+public record WrongCredentialsResponseModel(String detail) {}

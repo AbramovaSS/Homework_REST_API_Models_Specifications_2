@@ -81,7 +81,6 @@ public class LogoutTests extends TestBase {
 
         String actualRefreshError = refreshNullResponse.refresh().get(0);
         assertThat(actualRefreshError).isEqualTo(NULL_FIELD_ERROR);
-
     }
 
     @Test

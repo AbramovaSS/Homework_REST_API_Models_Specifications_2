@@ -52,8 +52,8 @@ public class LoginTests extends TestBase {
         assertThat(actualAccess).startsWith(expectedTokenPath);
         assertThat(actualRefresh).startsWith(expectedTokenPath);
         assertThat(actualAccess).isNotEqualTo(actualRefresh);
-
     }
+
     @Test
     @DisplayName("Вход в аккаунт с неверным паролем")
     public void wrongCredentialLogin() {
@@ -113,7 +113,5 @@ public class LoginTests extends TestBase {
 
         String actualUsername = emptyUsernameLoginResponse.username().get(0);
         assertThat(actualUsername).isEqualTo(EMPTY_FIELD_ERROR);
-
     }
-
 }
